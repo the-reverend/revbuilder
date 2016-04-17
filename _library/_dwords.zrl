@@ -1,0 +1,6 @@
+/** _dwords v.2 **/
+/*- _dwords(string, delimiter) -*/
+/*- v.2 tested -*/
+_dwords: procedure expose (globals)
+ rslt=words(translate(arg(1),arg(2)||" "," "||arg(2)))
+return rslt

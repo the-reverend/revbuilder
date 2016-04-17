@@ -1,0 +1,35 @@
+/** _ansi v.3 **/
+/*- _ansi fmtstr -*/
+/*- v.3 tested -*/
+_ansi: procedure expose (globals)
+ rslt="0"
+ pre=""
+ do i=1 to _dwords(arg(1),";")
+  w=_dword(arg(1),i,";")
+  select
+   when w="clearline" then pre=pre||"^[[100D^[[K"
+   when w="dl"  then rslt=rslt||";"||0  /* dull               */
+   when w="bt"  then rslt=rslt||";"||1  /* bright             */
+   when w="ul"  then rslt=rslt||";"||4  /* underlined         */
+   when w="blk" then rslt=rslt||";"||5  /* blinking           */
+   when w="fbk" then rslt=rslt||";"||30 /* black foreground   */
+   when w="frd" then rslt=rslt||";"||31 /* red foreground     */
+   when w="fgr" then rslt=rslt||";"||32 /* green foreground   */
+   when w="fye" then rslt=rslt||";"||33 /* yellow foreground  */
+   when w="fbl" then rslt=rslt||";"||34 /* blue foreground    */
+   when w="fmg" then rslt=rslt||";"||35 /* magenta foreground */
+   when w="fcy" then rslt=rslt||";"||36 /* cyan foreground    */
+   when w="fwh" then rslt=rslt||";"||37 /* white foreground   */
+   when w="bbk" then rslt=rslt||";"||40 /* black background   */
+   when w="brd" then rslt=rslt||";"||41 /* red background     */
+   when w="bgr" then rslt=rslt||";"||42 /* green background   */
+   when w="bye" then rslt=rslt||";"||43 /* yellow background  */
+   when w="bbl" then rslt=rslt||";"||44 /* blue background    */
+   when w="bmg" then rslt=rslt||";"||45 /* magenta background */
+   when w="bcy" then rslt=rslt||";"||46 /* cyan background    */
+   when w="bwh" then rslt=rslt||";"||47 /* white background   */
+   otherwise nop
+  end /*select*/
+ end /*do*/
+ rslt=pre||"^[["||rslt||"m"
+return rslt

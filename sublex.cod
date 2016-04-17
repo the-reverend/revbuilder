@@ -1,0 +1,75 @@
+{ lexical analyzer template (TP Lex V3.0), V1.0 3-2-91 AG }
+{  template modified by ron wilson                        }
+
+{ global definitions: }
+%%
+
+function yysublex(var yyvars : tyyvars; var ll: tliblist ) : Integer;
+
+procedure yyaction ( yyruleno : Integer; var yyvars : tyyvars );
+  { local definitions: }
+%%
+begin
+  { actions: }
+  case yyruleno of
+%%
+  end;
+end{yyaction};
+
+{ DFA table: }
+%%
+
+var yyn : Integer;
+
+label start, scan, action, readnext;
+
+begin
+  inc(yyvars.yyiter);
+  if yyvars.yyiter>1 then goto scan;
+
+start:
+  { initialize: }
+  yynew(yyvars);
+
+scan:
+  { mark positions and matches: }
+  for yyn := yykl[yyvars.yystate] to     yykh[yyvars.yystate] do yymark(yyk[yyn],yyvars);
+  for yyn := yymh[yyvars.yystate] downto yyml[yyvars.yystate] do yymatch(yym[yyn],yyvars);
+
+  if yytl[yyvars.yystate]>yyth[yyvars.yystate] then goto action; { dead state }
+
+  { get next character: }
+  yyscan(yyvars);
+
+  { determine action: }
+  yyn := yytl[yyvars.yystate];
+  while (yyn<=yyth[yyvars.yystate]) and not (yyvars.yyactchar in yyt[yyn].cc) do inc(yyn);
+  if yyn>yyth[yyvars.yystate] then goto action;
+    { no transition on yyactchar in this state }
+
+  { switch to new state: }
+  yyvars.yystate := yyt[yyn].s;
+
+  if yyvars.bufptr>yyvars.buflen then goto readnext
+  else goto scan;
+
+action:
+  { execute action: }
+  if yyfind(yyvars.yyrule,yyvars) then
+  begin
+    yyaction(yyvars.yyrule,yyvars);
+    if yyvars.yyreject then goto action;
+  end
+  else if yyvars.bufptr>yyvars.buflen then goto readnext
+       else if not yydefault(yyvars) then
+            begin
+              yyclear(yyvars);
+              return(0,yyvars);
+            end;
+
+  if not yyvars.yydone then goto start;
+
+readnext:
+  yysublex := yyvars.yyretval;
+
+end;

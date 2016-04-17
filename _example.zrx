@@ -1,0 +1,10 @@
+/* REXX */
+
+/*- star-dash comment -*/
+
+line="hello there"
+
+call zocwrite _ansi("bt;frd")
+call zocwriteln line
+
+exit
